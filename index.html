@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teamwork | B1 Reading Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FFF9F0;
+  --teal: #1B7A6E;
+  --teal-mid: #28A090;
+  --teal-pale: #DFF2EF;
+  --amber: #F4A228;
+  --amber-pale: #FEF0D4;
+  --coral: #E85D3A;
+  --coral-pale: #FDEAE4;
+  --green: #239963;
+  --green-pale: #D4EEE0;
+  --text: #2A2A2A;
+  --muted: #777;
+  --white: #fff;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(27,122,110,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+ 
+/* ── HEADER ── */
+.app-header{
+  background:linear-gradient(135deg,var(--teal) 0%,var(--teal-mid) 100%);
+  color:#fff;padding:18px 28px;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:10px;
+  position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.18);
+}
+.hdr-title{font-size:1.5rem;font-weight:900;letter-spacing:-0.3px}
+.hdr-sub{font-size:0.8rem;opacity:.82;margin-top:2px}
+.score-pill{
+  background:rgba(255,255,255,0.22);border-radius:50px;
+  padding:8px 20px;display:flex;align-items:center;gap:8px;
+  font-weight:900;font-size:1rem;backdrop-filter:blur(8px);
+}
+.score-pill span{font-size:.82rem;opacity:.7;font-weight:600}
+ 
+/* ── NAV ── */
+.nav-strip{
+  background:#fff;border-bottom:2px solid var(--teal-pale);
+  padding:0 12px;display:flex;overflow-x:auto;gap:2px;
+  position:sticky;top:73px;z-index:99;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+}
+.nav-strip::-webkit-scrollbar{height:3px}
+.nav-strip::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
+.nav-btn{
+  padding:13px 13px;background:none;border:none;
+  border-bottom:3px solid transparent;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:0.8rem;
+  color:var(--muted);white-space:nowrap;transition:all .2s;
+  display:flex;align-items:center;gap:5px;
+}
+.nav-btn:hover{color:var(--teal)}
+.nav-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
+.nav-btn.done{color:var(--green)}
+.nav-btn .ck{display:none}
+.nav-btn.done .ck{display:inline}
+ 
+/* ── MAIN ── */
+.main{max-width:860px;margin:0 auto;padding:28px 18px 80px}
+.section{display:none;animation:fadeUp .35s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+ 
+/* ── ACTIVITY HEADER ── */
+.act-hdr{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.act-num{
+  width:46px;height:46px;min-width:46px;border-radius:50%;
+  background:var(--amber);color:#fff;font-weight:900;font-size:1.15rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.act-title{font-size:1.35rem;font-weight:900;color:var(--teal)}
+.act-sub{font-size:0.87rem;color:var(--muted);margin-top:3px}
+ 
+/* ── CARDS ── */
+.card{background:#fff;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);margin-bottom:14px}
+ 
+/* ── BUTTONS ── */
+.btn{
+  padding:11px 26px;border:none;border-radius:50px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;
+  cursor:pointer;transition:all .2s;
+}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover{background:var(--teal-mid);transform:translateY(-2px);box-shadow:0 6px 20px rgba(27,122,110,.3)}
+.btn-amber{background:var(--amber);color:#fff}
+.btn-amber:hover{background:#e8941a;transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-sm{padding:8px 18px;font-size:.83rem}
+ 
+/* ── INFO BOX ── */
+.info-box{
+  background:var(--teal-pale);border-left:4px solid var(--teal);
+  border-radius:0 10px 10px 0;padding:12px 16px;
+  margin-bottom:18px;font-size:.88rem;font-weight:700;color:var(--teal);
+}
+ 
+/* ── PROGRESS BAR ── */
+.prog-bar{width:100%;height:8px;background:var(--teal-pale);border-radius:10px;margin-bottom:18px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-mid));border-radius:10px;transition:width .5s ease}
+ 
+/* ── FEEDBACK ── */
+.fb{padding:13px 18px;border-radius:10px;font-weight:700;font-size:.9rem;margin-top:12px;display:none}
+.fb.ok{background:var(--green-pale);color:var(--green);border-left:4px solid var(--green)}
+.fb.err{background:var(--coral-pale);color:var(--coral);border-left:4px solid var(--coral)}
+.fb.show{display:block}
+ 
+/* ── SHAKE ANIMATION ── */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.shake{animation:shake .4s ease}
+ 
+/* ── ACT 1: PREDICT ── */
+.photo-wrap{border-radius:var(--radius);overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow)}
+.photo-wrap img{width:100%;max-height:300px;object-fit:cover;display:block}
+.s-group{margin-bottom:13px}
+.s-label{font-weight:700;color:var(--teal);margin-bottom:5px;font-size:.87rem;display:flex;align-items:center;gap:7px}
+.s-num{width:22px;height:22px;border-radius:50%;background:var(--amber);color:#fff;font-size:.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;min-width:22px}
+.s-input{
+  width:100%;padding:11px 14px;border:2px solid var(--teal-pale);
+  border-radius:10px;font-family:'Nunito',sans-serif;font-size:.92rem;
+  resize:none;transition:border-color .2s;min-height:66px;
+}
+.s-input:focus{outline:none;border-color:var(--teal)}
+.wc{text-align:right;font-size:.75rem;color:var(--muted);margin-top:3px}
+ 
+/* ── ACT 2: READ ── */
+.read-prog-label{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:.85rem;margin-bottom:7px}
+.read-prog-label .rpl-l{color:var(--teal)}
+.read-prog-label .rpl-r{color:var(--muted)}
+.read-prog-track{height:10px;background:var(--teal-pale);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.read-prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-mid));border-radius:10px;transition:width .5s ease;width:0%}
+ 
+.rcard{background:#fff;border-radius:var(--radius);margin-bottom:14px;box-shadow:0 2px 16px rgba(27,122,110,0.09);border:2px solid #eee;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.rcard.rc-open{border-color:var(--teal-pale);box-shadow:0 4px 24px rgba(27,122,110,0.14)}
+.rcard.rc-done{border-color:var(--green)!important;box-shadow:0 2px 16px rgba(35,153,99,0.15)!important}
+.rcard-accent{height:5px;width:100%}
+.rcard-head{display:flex;align-items:center;gap:12px;padding:15px 20px;cursor:pointer;user-select:none;transition:background .2s}
+.rcard-head:hover{background:#f8fdfc}
+.rcard-icon{width:40px;height:40px;min-width:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.rcard-title{font-weight:900;font-size:.96rem;color:var(--text);line-height:1.3}
+.rcard-hint{font-size:.74rem;color:var(--muted);margin-top:2px;font-weight:600}
+.rcard-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.rdone-badge{font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:50px;background:var(--green-pale);color:var(--green);display:none}
+.rc-done .rdone-badge{display:inline-block}
+.rcard-arrow{font-size:.9rem;color:var(--muted);transition:transform .3s;font-style:normal}
+.rc-open .rcard-arrow{transform:rotate(180deg)}
+ 
+.rcard-body{max-height:0;overflow:hidden;transition:max-height .45s ease;border-top:0 solid var(--teal-pale)}
+.rc-open .rcard-body{max-height:1200px;border-top-width:1px}
+.rcard-body-inner{padding:18px 22px 6px;font-size:.94rem;line-height:1.83;color:var(--text)}
+ 
+.rq{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,#FFFBF0,#FEF4D8);border-radius:12px;padding:18px;margin:12px 0 10px;border:1px solid #F4D48A}
+.rq-mark{font-family:'Libre Baskerville',serif;font-size:2.8rem;color:var(--amber);line-height:1;flex-shrink:0;margin-top:-6px;opacity:.55}
+.rq-text{font-family:'Libre Baskerville',serif;font-style:italic;font-size:.9rem;line-height:1.72;color:#4A3200}
+.rq-speaker{display:block;font-family:'Nunito',sans-serif;font-style:normal;font-size:.74rem;font-weight:800;color:var(--amber);margin-top:7px;text-transform:uppercase;letter-spacing:.5px}
+ 
+.rcard-footer{padding:12px 22px 16px;display:flex;align-items:center;justify-content:space-between}
+.mrb{padding:8px 18px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;cursor:pointer;transition:all .2s;border:2px solid var(--teal);color:var(--teal);background:#fff}
+.mrb:hover:not(.is-read){background:var(--teal);color:#fff}
+.mrb.is-read{background:var(--green);border-color:var(--green);color:#fff;cursor:default}
+.rcard-wc{font-size:.74rem;color:var(--muted);font-weight:600}
+ 
+/* ── ACT 3: SUMMARY ── */
+.sum-card{
+  border:3px solid var(--teal-pale);border-radius:var(--radius);
+  padding:18px;margin-bottom:14px;cursor:pointer;transition:all .25s;
+}
+.sum-card:hover:not(.locked){border-color:var(--teal-mid);background:var(--teal-pale)}
+.sum-card.sel{border-color:var(--amber);background:var(--amber-pale)}
+.sum-card.correct{border-color:var(--green);background:var(--green-pale)}
+.sum-card.wrong{border-color:var(--coral);background:var(--coral-pale)}
+.sum-num{
+  display:inline-flex;width:30px;height:30px;border-radius:50%;
+  background:var(--amber);color:#fff;font-weight:900;font-size:.85rem;
+  align-items:center;justify-content:center;margin-bottom:10px;
+}
+ 
+/* ── ACT 4: QUIZ ── */
+.q-meta{display:flex;justify-content:space-between;align-items:center;font-size:.83rem;font-weight:700;color:var(--muted);margin-bottom:8px}
+.q-card{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.q-text{font-size:1.02rem;font-weight:800;color:var(--teal);margin-bottom:18px;line-height:1.5}
+.opt{
+  display:block;width:100%;text-align:left;padding:12px 16px;
+  margin-bottom:9px;border:2px solid var(--teal-pale);border-radius:10px;
+  background:#fff;font-family:'Nunito',sans-serif;font-size:.92rem;
+  font-weight:600;cursor:pointer;transition:all .2s;color:var(--text);
+}
+.opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-pale)}
+.opt.ok{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.opt.err{border-color:var(--coral);background:var(--coral-pale);color:var(--coral)}
+.opt.reveal{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.q-nav{display:flex;gap:10px;margin-top:18px;align-items:center}
+ 
+/* ── ACT 5: VOCAB ── */
+.v-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.v-col-lbl{font-weight:900;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.vchip{
+  display:block;width:100%;padding:11px 14px;border:2px solid var(--teal-pale);
+  border-radius:9px;background:#fff;font-family:'Nunito',sans-serif;
+  font-weight:700;font-size:.87rem;cursor:pointer;text-align:left;
+  transition:all .2s;margin-bottom:7px;color:var(--text);
+}
+.vchip:hover:not(.matched):not(.vsel){border-color:var(--teal);background:var(--teal-pale)}
+.vchip.vsel{border-color:var(--amber);background:var(--amber-pale);color:#5a3a00}
+.vchip.matched{border-color:var(--green);background:var(--green-pale);color:var(--green);cursor:default}
+ 
+/* ── ACT 6: GAPS ── */
+.wordbank{
+  display:flex;flex-wrap:wrap;gap:7px;padding:14px;
+  background:var(--teal-pale);border-radius:12px;margin-bottom:18px;
+}
+.bchip{
+  padding:7px 14px;background:#fff;border:2px solid var(--teal);
+  border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;
+  font-size:.83rem;cursor:pointer;transition:all .2s;color:var(--teal);
+}
+.bchip:hover:not(.used){background:var(--teal);color:#fff}
+.bchip.bsel{background:var(--amber);border-color:var(--amber);color:#fff}
+.bchip.used{opacity:.32;cursor:not-allowed}
+.gsent{
+  font-size:.93rem;line-height:1.85;padding:13px 16px;background:#fff;
+  border-radius:9px;border:2px solid var(--teal-pale);margin-bottom:9px;
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px;
+}
+.sn{
+  width:24px;height:24px;min-width:24px;border-radius:50%;
+  background:var(--amber);color:#fff;font-size:.72rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;margin-right:4px;
+}
+.gap{
+  display:inline-flex;align-items:center;min-width:130px;
+  border-bottom:3px solid var(--teal);padding:2px 6px;margin:0 3px;
+  font-weight:800;color:var(--teal);cursor:pointer;border-radius:4px;
+  transition:all .2s;min-height:28px;font-size:.88rem;
+}
+.gap:hover{background:var(--teal-pale)}
+.gap.gfilled{background:var(--teal-pale)}
+.gap.gcorrect{background:var(--green-pale);border-color:var(--green);color:var(--green)}
+.gap.gwrong{background:var(--coral-pale);border-color:var(--coral);color:var(--coral)}
+ 
+/* ── ACT 7: QUOTES (quiz style) ── */
+.qz-card{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.q-begin{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:1rem;color:var(--teal);line-height:1.65;margin-bottom:20px;
+  background:var(--teal-pale);padding:16px 20px;border-radius:10px;
+  border-left:4px solid var(--teal);
+}
+.q-speaker{
+  display:block;font-family:'Nunito',sans-serif;font-style:normal;
+  font-size:.75rem;font-weight:700;color:var(--muted);margin-top:8px;
+}
+.qopt{
+  display:block;width:100%;text-align:left;padding:12px 16px;
+  margin-bottom:9px;border:2px solid var(--teal-pale);border-radius:10px;
+  background:#fff;font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:.88rem;cursor:pointer;transition:all .2s;color:var(--text);
+  line-height:1.5;
+}
+.qopt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-pale)}
+.qopt.ok{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+.qopt.err{border-color:var(--coral);background:var(--coral-pale);color:var(--coral)}
+.qopt.reveal{border-color:var(--green);background:var(--green-pale);color:var(--green)}
+ 
+/* ── ACT 8: DISCUSS ── */
+.disc-card{
+  background:#fff;border-radius:var(--radius);padding:20px;
+  border:2px solid var(--teal-pale);margin-bottom:12px;transition:border-color .2s;
+}
+.disc-card.disc-done{border-color:var(--green)}
+.dq{font-weight:800;color:var(--teal);font-size:.95rem;margin-bottom:11px;display:flex;gap:10px;align-items:flex-start}
+.dq-num{
+  width:27px;height:27px;min-width:27px;border-radius:50%;
+  background:var(--amber);color:#fff;font-size:.78rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.dtxt{
+  width:100%;min-height:86px;padding:11px 14px;border:2px solid var(--teal-pale);
+  border-radius:9px;font-family:'Nunito',sans-serif;font-size:.9rem;
+  resize:vertical;transition:border-color .2s;
+}
+.dtxt:focus{outline:none;border-color:var(--teal)}
+.disc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:7px}
+.cc{font-size:.75rem;color:var(--muted)}
+.done-btn{
+  padding:7px 15px;border:2px solid var(--green);border-radius:50px;
+  background:#fff;color:var(--green);font-family:'Nunito',sans-serif;
+  font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s;
+}
+.done-btn:hover{background:var(--green);color:#fff}
+.done-btn.is-done{background:var(--green);color:#fff}
+ 
+/* ── CERTIFICATE ── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;z-index:1000;
+}
+.overlay.open{display:flex;animation:fadeUp .3s ease}
+.cert{
+  background:#fff;border-radius:24px;padding:38px 32px;
+  max-width:480px;width:92%;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.28);
+}
+.cert-icon{font-size:3.5rem;display:block;margin-bottom:10px}
+.cert-h{font-size:1.7rem;font-weight:900;color:var(--teal);margin-bottom:6px}
+.cert-s{font-size:.9rem;color:var(--muted);margin-bottom:16px}
+.cert-pts{font-size:2.8rem;font-weight:900;color:var(--amber);margin-bottom:12px}
+.cert-msg{font-size:.9rem;line-height:1.65;color:var(--text);margin-bottom:22px}
+ 
+/* ── CONFETTI ── */
+.cp{position:fixed;animation:cffall linear forwards;z-index:9999}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+ 
+/* ── FOOTER ── */
+.app-footer{
+  text-align:center;padding:18px;font-size:.75rem;color:var(--muted);
+  border-top:1px solid var(--teal-pale);background:#fff;
+}
+ 
+/* ── UTILS ── */
+.tc{text-align:center}.mt16{margin-top:16px}.mt20{margin-top:20px}
+.result-box{background:#fff;border-radius:var(--radius);padding:28px;text-align:center;box-shadow:var(--shadow)}
+ 
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .v-grid{grid-template-columns:1fr}
+  .app-header{padding:14px 16px}
+  .hdr-title{font-size:1.2rem}
+  .main{padding:18px 14px 60px}
+  .q-card,.qz-card{padding:18px}
+}
+</style>
+</head>
+<body>
+ 
+<!-- HEADER -->
+<header class="app-header">
+  <div>
+    <div class="hdr-title">🤝 GED 100 Workplace Essentials — Teamwork</div>
+  </div>
+  <div class="score-pill">
+    ⭐ <strong id="scoreDisplay">0</strong> <span>/ 300 pts</span>
+  </div>
+</header>
+ 
+<!-- NAV -->
+<nav class="nav-strip">
+  <button class="nav-btn active" onclick="goTo(1)" id="nb1">🖼️ Predict <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(2)" id="nb2">📖 Read <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(3)" id="nb3">📋 Summary <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(4)" id="nb4">❓ Quiz <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(5)" id="nb5">🔤 Vocabulary <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(6)" id="nb6">✏️ Fill Gaps <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(7)" id="nb7">💬 Quotes <span class="ck">✔</span></button>
+  <button class="nav-btn" onclick="goTo(8)" id="nb8">💭 Discuss <span class="ck">✔</span></button>
+</nav>
+ 
+<!-- MAIN -->
+<main class="main">
+ 
+  <!-- ═══════ ACT 1: PREDICT ═══════ -->
+  <section class="section active" id="s1">
+    <div class="act-hdr">
+      <div class="act-num">1</div>
+      <div><div class="act-title">Look at the Photo</div>
+      <div class="act-sub">What do you think the text is about? Write 5 sentences.</div></div>
+    </div>
+    <div class="photo-wrap">
+      <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;background:#f0f7f6">
+        <!-- Background -->
+        <rect width="800" height="320" fill="#E8F5F3"/>
+        <!-- Window -->
+        <rect x="30" y="30" width="110" height="130" rx="4" fill="#B8DFF9" opacity=".7"/>
+        <line x1="85" y1="30" x2="85" y2="160" stroke="#8CC8F0" stroke-width="2"/>
+        <line x1="30" y1="95" x2="140" y2="95" stroke="#8CC8F0" stroke-width="2"/>
+        <!-- Wall -->
+        <rect x="0" y="0" width="800" height="320" fill="none"/>
+        <!-- Big desk -->
+        <rect x="80" y="215" width="620" height="18" rx="4" fill="#C8A97A"/>
+        <rect x="80" y="228" width="620" height="6" rx="2" fill="#A87D50"/>
+        <!-- Desk legs -->
+        <rect x="100" y="233" width="14" height="60" rx="3" fill="#A87D50"/>
+        <rect x="670" y="233" width="14" height="60" rx="3" fill="#A87D50"/>
+        <!-- Laptop -->
+        <rect x="290" y="170" width="160" height="46" rx="6" fill="#CBD5E1"/>
+        <rect x="296" y="175" width="148" height="36" rx="4" fill="#1B7A6E"/>
+        <!-- Laptop screen glow lines -->
+        <rect x="306" y="182" width="80" height="4" rx="2" fill="#28A090" opacity=".6"/>
+        <rect x="306" y="191" width="55" height="4" rx="2" fill="#28A090" opacity=".4"/>
+        <rect x="306" y="200" width="68" height="4" rx="2" fill="#28A090" opacity=".3"/>
+        <rect x="270" y="214" width="200" height="6" rx="3" fill="#A0ADB8"/>
+        <!-- Papers on desk -->
+        <rect x="160" y="195" width="90" height="20" rx="3" fill="#fff" transform="rotate(-4,205,205)"/>
+        <rect x="163" y="198" width="55" height="3" rx="1" fill="#CBD5E1" transform="rotate(-4,205,205)"/>
+        <rect x="163" y="204" width="40" height="3" rx="1" fill="#CBD5E1" transform="rotate(-4,205,205)"/>
+        <rect x="490" y="198" width="80" height="18" rx="3" fill="#fff" transform="rotate(3,530,207)"/>
+        <rect x="493" y="201" width="50" height="3" rx="1" fill="#CBD5E1" transform="rotate(3,530,207)"/>
+        <!-- Coffee cups -->
+        <rect x="590" y="199" width="24" height="18" rx="4" fill="#fff" stroke="#E0C9A0" stroke-width="2"/>
+        <ellipse cx="602" cy="199" rx="12" ry="4" fill="#F4DDB0"/>
+        <path d="M614 207 Q622 207 622 212 Q622 217 614 217" stroke="#E0C0A0" stroke-width="2" fill="none"/>
+        <!-- Person 1 — left, standing, holding tablet -->
+        <!-- Body -->
+        <ellipse cx="155" cy="115" rx="28" ry="32" fill="#FBBF99"/>
+        <!-- Hair -->
+        <ellipse cx="155" cy="90" rx="28" ry="20" fill="#8B3A3A"/>
+        <rect x="127" y="88" width="56" height="18" fill="#8B3A3A"/>
+        <!-- Face -->
+        <circle cx="147" cy="112" r="3" fill="#5A2D0C"/>
+        <circle cx="163" cy="112" r="3" fill="#5A2D0C"/>
+        <path d="M148 122 Q155 128 162 122" stroke="#5A2D0C" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Shirt -->
+        <path d="M127 145 Q130 135 155 135 Q180 135 183 145 L190 215 L120 215 Z" fill="#ffffff" stroke="#CBD5E1" stroke-width="1"/>
+        <!-- Arms holding tablet -->
+        <path d="M127 150 Q100 160 95 185" stroke="#FBBF99" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <path d="M183 150 Q205 160 210 185" stroke="#FBBF99" stroke-width="14" fill="none" stroke-linecap="round"/>
+        <rect x="85" y="168" width="50" height="34" rx="5" fill="#374151"/>
+        <rect x="89" y="172" width="42" height="26" rx="3" fill="#1B7A6E"/>
+ 
+        <!-- Person 2 — center-left, seated, leaning in -->
+        <ellipse cx="310" cy="140" rx="26" ry="30" fill="#F5CBA7"/>
+        <ellipse cx="310" cy="116" rx="26" ry="18" fill="#5C3D11"/>
+        <rect x="284" y="114" width="52" height="14" fill="#5C3D11"/>
+        <circle cx="302" cy="138" r="3" fill="#2D1006"/>
+        <circle cx="318" cy="138" r="3" fill="#2D1006"/>
+        <path d="M303 148 Q310 154 317 148" stroke="#2D1006" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M284 168 Q287 158 310 158 Q333 158 336 168 L340 215 L280 215 Z" fill="#F4A228"/>
+        <!-- Arm reaching to desk -->
+        <path d="M336 165 Q355 175 370 200" stroke="#F5CBA7" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <path d="M284 165 Q270 175 260 200" stroke="#F5CBA7" stroke-width="13" fill="none" stroke-linecap="round"/>
+ 
+        <!-- Person 3 — center-right, seated, looking at laptop -->
+        <ellipse cx="490" cy="138" rx="26" ry="30" fill="#FDDBB4"/>
+        <ellipse cx="490" cy="116" rx="26" ry="19" fill="#2C1810"/>
+        <rect x="464" y="114" width="52" height="14" fill="#2C1810"/>
+        <circle cx="482" cy="136" r="3" fill="#1a0a04"/>
+        <circle cx="498" cy="136" r="3" fill="#1a0a04"/>
+        <path d="M483 146 Q490 153 497 146" stroke="#1a0a04" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M464 165 Q467 156 490 156 Q513 156 516 165 L520 215 L460 215 Z" fill="#1B7A6E"/>
+        <path d="M464 162 Q445 175 435 200" stroke="#FDDBB4" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <path d="M516 162 Q535 172 545 198" stroke="#FDDBB4" stroke-width="13" fill="none" stroke-linecap="round"/>
+ 
+        <!-- Person 4 — right, standing, pointing at screen -->
+        <ellipse cx="650" cy="110" rx="27" ry="30" fill="#D4956A"/>
+        <ellipse cx="650" cy="87" rx="27" ry="19" fill="#1A1A2E"/>
+        <rect x="623" y="86" width="54" height="14" fill="#1A1A2E"/>
+        <circle cx="642" cy="108" r="3" fill="#3D1A05"/>
+        <circle cx="658" cy="108" r="3" fill="#3D1A05"/>
+        <path d="M643 118 Q650 125 657 118" stroke="#3D1A05" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M623 140 Q626 130 650 130 Q674 130 677 140 L685 215 L615 215 Z" fill="#6B7280"/>
+        <!-- Arm pointing -->
+        <path d="M623 145 Q590 158 560 185" stroke="#D4956A" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <circle cx="554" cy="189" r="7" fill="#D4956A"/>
+        <path d="M677 145 Q695 155 705 175" stroke="#D4956A" stroke-width="13" fill="none" stroke-linecap="round"/>
+ 
+        <!-- Speech bubble -->
+        <rect x="460" y="42" width="190" height="52" rx="12" fill="#fff" stroke="#1B7A6E" stroke-width="2"/>
+        <polygon points="480,94 500,94 490,108" fill="#fff" stroke="#1B7A6E" stroke-width="2"/>
+        <polygon points="481,93 499,93 490,106" fill="#fff"/>
+        <text x="475" y="67" font-family="Nunito,sans-serif" font-size="13" font-weight="700" fill="#1B7A6E">Great idea! Let's</text>
+        <text x="475" y="84" font-family="Nunito,sans-serif" font-size="13" font-weight="700" fill="#1B7A6E">work on it together.</text>
+ 
+        <!-- Caption bar -->
+        <rect x="0" y="290" width="800" height="30" fill="rgba(27,122,110,0.85)"/>
+        <text x="400" y="310" text-anchor="middle" font-family="Nunito,sans-serif" font-size="13" font-weight="700" fill="#fff">A team of colleagues collaborating at work</text>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="info-box">💡 Use the guide questions below to help you write your sentences.</div>
+      <div id="sentBoxes"></div>
+      <div class="tc mt20">
+        <button class="btn btn-teal" onclick="submitPredict()">Submit Predictions ➜</button>
+      </div>
+      <div class="fb" id="fb1"></div>
+    </div>
+  </section>
+ 
+  <!-- ═══════ ACT 2: READ ═══════ -->
+  <section class="section" id="s2">
+    <div class="act-hdr">
+      <div class="act-num">2</div>
+      <div><div class="act-title">Read the Text</div>
+      <div class="act-sub">Open each section, read it carefully, then mark it as done.</div></div>
+    </div>
+    <div class="info-box">💡 Click any section to open it. Click <strong>✓ Mark as Read</strong> when you finish each one. Try to read them all!</div>
+    <div class="read-prog-label">
+      <span class="rpl-l" id="readProgLabel">📖 0 of 10 sections read</span>
+      <span class="rpl-r" id="readProgPct">0%</span>
+    </div>
+    <div class="read-prog-track"><div class="read-prog-fill" id="readProgFill"></div></div>
+    <div id="readSections"></div>
+    <div class="tc mt20">
+      <button class="btn btn-teal" onclick="finishRead()">✅ Finished Reading</button>
+    </div>
+    <div class="fb" id="fb2"></div>
+  </section>
+ 
+  <!-- ═══════ ACT 3: SUMMARY ═══════ -->
+  <section class="section" id="s3">
+    <div class="act-hdr">
+      <div class="act-num">3</div>
+      <div><div class="act-title">Choose the Best Summary</div>
+      <div class="act-sub">Read all three. Which one best matches the text?</div></div>
+    </div>
+    <div id="sumCards"></div>
+    <div class="tc mt20">
+      <button class="btn btn-amber" id="sumBtn" onclick="checkSum()" disabled>Check My Answer ✓</button>
+    </div>
+    <div class="fb" id="fb3"></div>
+    <div class="tc mt16" id="sum-next" style="display:none">
+      <button class="btn btn-teal" onclick="goTo(4)">Next Activity ➜</button>
+    </div>
+  </section>
+ 
+  <!-- ═══════ ACT 4: QUIZ ═══════ -->
+  <section class="section" id="s4">
+    <div class="act-hdr">
+      <div class="act-num">4</div>
+      <div><div class="act-title">Answer the Questions</div>
+      <div class="act-sub">14 comprehension questions · 5 points each</div></div>
+    </div>
+    <div class="q-meta">
+      <span id="qProg">Question 1 of 14</span>
+      <span id="qScore" style="color:var(--teal);font-weight:900">Score: 0</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="qBar" style="width:0%"></div></div>
+    <div class="q-card" id="qCard"></div>
+    <div class="q-nav" id="qNav">
+      <button class="btn btn-teal" id="qNext" onclick="nextQ()" style="display:none">Next ➜</button>
+    </div>
+    <div id="qResult" style="display:none"></div>
+  </section>
+ 
+  <!-- ═══════ ACT 5: VOCABULARY ═══════ -->
+  <section class="section" id="s5">
+    <div class="act-hdr">
+      <div class="act-num">5</div>
+      <div><div class="act-title">Match the Words</div>
+      <div class="act-sub">Click a word, then click the correct definition. 10 pairs!</div></div>
+    </div>
+    <div class="info-box">👆 Select a <strong>word</strong> on the left → then click its <strong>definition</strong> on the right. Each correct match = 5 points.</div>
+    <div class="v-grid">
+      <div><div class="v-col-lbl">📝 Words</div><div id="vWords"></div></div>
+      <div><div class="v-col-lbl">📖 Definitions</div><div id="vDefs"></div></div>
+    </div>
+    <div class="fb" id="fb5"></div>
+    <div class="tc mt16" id="v-next" style="display:none">
+      <button class="btn btn-teal" onclick="goTo(6)">Next Activity ➜</button>
+    </div>
+  </section>
+ 
+  <!-- ═══════ ACT 6: FILL GAPS ═══════ -->
+  <section class="section" id="s6">
+    <div class="act-hdr">
+      <div class="act-num">6</div>
+      <div><div class="act-title">Complete the Sentences</div>
+      <div class="act-sub">Click a word from the box → then click a gap to fill it.</div></div>
+    </div>
+    <div class="wordbank" id="wBank"></div>
+    <div id="gapSents"></div>
+    <div class="tc mt20" style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-amber" id="gapCheck" onclick="checkGaps()">Check Answers ✓</button>
+      <button class="btn btn-teal" id="gapReset" onclick="resetGaps()" style="display:none">Try Again 🔄</button>
+    </div>
+    <div class="fb" id="fb6"></div>
+    <div class="tc mt16" id="gap-next" style="display:none">
+      <button class="btn btn-teal" onclick="goTo(7)">Next Activity ➜</button>
+    </div>
+  </section>
+ 
+  <!-- ═══════ ACT 7: QUOTE QUIZ ═══════ -->
+  <section class="section" id="s7">
+    <div class="act-hdr">
+      <div class="act-num">7</div>
+      <div><div class="act-title">Complete the Quotes</div>
+      <div class="act-sub">12 quotes · Choose the correct ending for each one!</div></div>
+    </div>
+    <div class="q-meta">
+      <span id="qzProg">Quote 1 of 12</span>
+      <span id="qzScore" style="color:var(--teal);font-weight:900">Score: 0</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="qzBar" style="width:0%"></div></div>
+    <div class="qz-card" id="qzCard"></div>
+    <div class="q-nav" id="qzNav">
+      <button class="btn btn-teal" id="qzNext" onclick="nextQz()" style="display:none">Next ➜</button>
+    </div>
+    <div id="qzResult" style="display:none"></div>
+  </section>
+ 
+  <!-- ═══════ ACT 8: DISCUSS ═══════ -->
+  <section class="section" id="s8">
+    <div class="act-hdr">
+      <div class="act-num">8</div>
+      <div><div class="act-title">Discussion Questions</div>
+      <div class="act-sub">Write your ideas first, then discuss with a partner. 5 points per question!</div></div>
+    </div>
+    <div class="info-box">🗣️ Write at least a few words for each question. Click <strong>Done</strong> when you have finished discussing it with your partner.</div>
+    <div id="discCards"></div>
+    <div class="tc mt20" id="certTrigger" style="display:none">
+      <button class="btn btn-amber" onclick="openCert()">🎓 Get My Certificate!</button>
+    </div>
+  </section>
+ 
+</main>
+ 
+<footer class="app-footer">
+  Text created by Terry Prosser &nbsp;·&nbsp; App designed by Nazila Motahari &nbsp;·&nbsp; B1 Level · Workplace English
+</footer>
+ 
+<!-- CERTIFICATE MODAL -->
+<div class="overlay" id="certOverlay">
+  <div class="cert">
+    <span class="cert-icon" id="certIcon">🏆</span>
+    <div class="cert-h">Well Done!</div>
+    <div class="cert-s">Teamwork · B1 Reading Lab · Complete</div>
+    <div class="cert-pts" id="certPts">0 / 300</div>
+    <div class="cert-msg" id="certMsg"></div>
+    <button class="btn btn-teal" onclick="document.getElementById('certOverlay').classList.remove('open')">Close ✕</button>
+  </div>
+</div>
+ 
+<script>
+// ══════════════════════════════
+// DATA
+// ══════════════════════════════
+ 
+const sentHints = [
+  "What are the people in the photo doing?",
+  "How many people can you see? Describe them.",
+  "Where do you think this photo was taken?",
+  "How do the people look? (happy / focused / busy...)",
+  "What topic do you think the text is about?"
+];
+ 
+const readData = [
+  {
+    h:"Introduction",
+    p:"Teamwork is essential in any workplace because it brings people together to achieve more than they could alone. As the saying goes, \"The whole is greater than the sum of its parts.\" When employees work well together and take responsibility for their tasks, projects run smoothly and the work environment becomes positive. However, when team members fail to contribute or rely too much on others, problems happen, deadlines are missed, and staff morale suffers. This case study explores real workplace examples where good teamwork led to success and poor collaboration caused problems.",
+    qs:[]
+  },
+  {
+    h:"The Advantages of Teamwork",
+    p:"One of the biggest advantages of teamwork is that it generates new ideas. In the business world, companies need innovation to stay ahead. When employees work together, they inspire each other, leading to creative solutions that might not happen when people work alone.",
+    qs:["\"At first, I didn't want to share my thoughts in meetings,\" says Sarah, a marketing specialist. \"But when my team encouraged me, I realized my ideas were valuable. Now, brainstorming sessions are my favourite part of the job because we build on each other's creativity.\""]
+  },
+  {
+    h:"Effective Problem Solving",
+    p:"No single person has all the answers. Different situations need different viewpoints, and teamwork allows for collective problem solving. When employees collaborate, they combine their knowledge and experiences to find the best solutions. Team problem solving goes beyond just sharing ideas — it's about troubleshooting together. The more perspectives a team has, the higher the chances of success.",
+    qs:["\"Working alone, I might miss something important,\" explains David, a project manager. \"But when my team discusses a problem, someone always thinks of something that I hadn't considered. That's how we avoid mistakes and make better decisions.\""]
+  },
+  {
+    h:"Increasing Morale and Motivation",
+    p:"A strong team keeps employees motivated. When people feel valued and supported, they are happier in their work. Teamwork encourages friendships and mutual respect, making the workplace more enjoyable. Good staff morale also leads to better performance. Employees who trust their colleagues are more willing to take initiative, knowing they have support.",
+    qs:["\"I used to hate Mondays,\" admits Lisa, a sales associate. \"But now that I work with a great team, even difficult days feel manageable. We help each other, and that makes all the difference.\""]
+  },
+  {
+    h:"Faster Learning and Skill Development",
+    p:"Teamwork encourages learning. Employees gain knowledge from their colleagues and develop skills they might not learn on their own.",
+    qs:["\"When I joined the company, I was nervous about my lack of experience,\" says Mark, a software developer. \"But my team helped me, and now I've learned more in six months than I did in two years at my last job.\""]
+  },
+  {
+    h:"Efficiency and Productivity",
+    p:"A collaborative environment is also more efficient. When employees work together, tasks get done faster. Shared responsibilities mean that no one is overwhelmed, and the combined effort leads to higher productivity. Colleagues can also give each other emotional support and this reduces stress.",
+    qs:["\"Before we started working in teams, projects took twice as long,\" says Emily, an office manager. \"Now, we divide tasks based on people's different strengths and skills, and everything flows smoothly.\"","\"There was a time when I wanted to leave,\" said Tom, a customer service representative. \"But my team helped me with my work, and reminded me I wasn't alone. That support kept me going.\""]
+  },
+  {
+    h:"Higher Quality Work",
+    p:"Teamwork leads to better results. When people check and review the work, the final product is often better. Feedback helps us find mistakes and improve quality.",
+    qs:["\"Before we submit a report, at least three team members review it,\" says Simon, a financial analyst. \"That way, we do the best possible work for our clients.\""]
+  },
+  {
+    h:"Building Trust and Strong Relationships",
+    p:"Trust is an important part of successful teamwork. When employees rely on each other, they build strong professional relationships and team members feel happy sharing ideas.",
+    qs:["\"We used to be nervous in team meetings,\" said James, a team leader. \"But we all trust each other now and know that we can share our ideas together. Now, our discussions are more productive. Everyone gets a chance to speak.\""]
+  },
+  {
+    h:"The Problems with Teamwork",
+    p:"Unfortunately, not all teams work well together. Sometimes, a lack of teamwork leads to failure. At a software company, a team was developing a new app, but one programmer rarely completed their tasks on time. Other team members had to do extra work to meet deadlines, which caused frustration. In another case, a sales team failed to reach their monthly target because some members did not contact their clients. This situation created tension in the team, and some employees were so unhappy that they left the company.",
+    qs:["\"When someone doesn't do their share, it affects the whole team. We missed our first deadline because we were waiting for one person's work. The client was unhappy, and we had to work extra hours to fix the mistakes.\"","\"A few people thought others would cover for them, but in the end, we all lost bonuses because of their lack of effort.\""]
+  },
+  {
+    h:"Togetherness",
+    p:"Good teamwork and shared responsibility improves problem solving in the workplace. Employees learn faster, work more efficiently, and produce higher-quality work. It helps to build trust and create a supportive environment where everyone is happy.",
+    qs:["\"Teamwork isn't just about getting work done — it's about growing together. When we work together, we achieve things none of us could do alone.\" — Sarah"]
+  }
+];
+ 
+const sumData = [
+  {n:1, txt:"The text explains how teamwork helps people to learn new skills from each other and grow together. It shows how teams can create fun activities to improve their relationships and make work enjoyable. It also discusses how teamwork can lead to creative projects that help the company succeed."},
+  {n:2, txt:"The text says that teamwork is a way for employees to work alone and still succeed. It explains that when team members keep their ideas to themselves, they can still solve problems without help. It also shows that teamwork can sometimes make people feel unhappy and unmotivated."},
+  {n:3, txt:"Teamwork is very important in the workplace because it helps people work together and achieve more. When employees share ideas and support each other, they can solve problems better and feel happier at work. However, if team members do not help or rely too much on others, it can cause issues and make work harder."}
+];
+ 
+const qData = [
+  {q:"According to the text, what is one of the biggest advantages of teamwork?", opts:["It makes meetings shorter.","It helps to generate new ideas.","Building trust among employees.","Reducing workplace stress."],a:1},
+  {q:"What happens when team members fail to contribute to their work?", opts:["The company loses clients.","Projects take longer to complete.","Deadlines are missed and morale suffers.","Employees receive fewer bonuses."],a:2},
+  {q:"What does Sarah from the marketing team say about sharing ideas?", opts:["She always liked sharing her thoughts in meetings.","She still prefers to work alone.","She thinks teamwork is a waste of time.","Her team encouraged her, and now she enjoys brainstorming."],a:3},
+  {q:"How does teamwork help with problem solving?", opts:["It allows managers to make decisions faster.","It combines different viewpoints and experiences.","It takes a longer time.","It creates competition between team members."],a:1},
+  {q:"According to David, the project manager, why is teamwork useful for problem solving?", opts:["Because team members may notice things he didn't consider.","Because it allows one person to make all the decisions.","Because it reduces the need for discussions.","Because other people have better solutions."],a:0},
+  {q:"How did teamwork change Lisa's attitude toward work?", opts:["She was more successful in her job.","She made more friends at work.","She now finds difficult days more manageable.","She was less motivated than before."],a:2},
+  {q:"According to Mark, what benefit did he experience from teamwork?", opts:["He learned more in six months than in two years at his previous job.","He got a promotion.","He made new friends at work.","He got to work on more interesting projects."],a:0},
+  {q:"According to Emily, how did teamwork change projects?", opts:["Projects took longer.","Employees became more stressed.","Fewer tasks were completed.","Tasks were divided based on different strengths, making work smoother."],a:3},
+  {q:"Why did Tom, the customer service representative, stay at his job?", opts:["Because his team supported him emotionally and with work.","Because his salary increased.","Because he couldn't find another job.","Because he was able to learn new things."],a:0},
+  {q:"How does Simon's team ensure high-quality work?", opts:["By letting one person check everything.","By avoiding feedback from colleagues.","By working as fast as possible.","By having at least three team members review reports."],a:3},
+  {q:"What does James say about trust in his team?", opts:["Team members are sometimes nervous in meetings.","His team never shares ideas.","Trust has improved discussions and everyone has the chance to speak.","Everyone agrees with his opinions."],a:2},
+  {q:"What problem occurred at the software company mentioned in the text?", opts:["The team leader quit unexpectedly.","One programmer didn't complete tasks on time.","The app they developed had technical problems.","The client cancelled the project."],a:1},
+  {q:"Why did the sales team fail to reach their monthly target?", opts:["Because all team members worked too hard.","Because some members didn't follow up with clients, thinking others would.","Because the team leader did all the work alone.","Because some employees left the company."],a:1},
+  {q:"What did Sarah mean when she said \"Teamwork isn't just about getting work done\"?", opts:["Teamwork is mainly about building friendships.","Teamwork helps employees avoid difficult tasks.","Teamwork is about growing together and achieving more than individuals could alone.","Teamwork makes the workday go by faster."],a:2}
+];
+ 
+const vocabPairs = [
+  {w:"combine",          d:"putting two or more things together to make one"},
+  {w:"contribute",       d:"giving something, like time or ideas, to help a group"},
+  {w:"inspire",          d:"making someone want to do something good or creative"},
+  {w:"work environment", d:"the place where people do their jobs"},
+  {w:"collaboration",    d:"working together with others to do something"},
+  {w:"manageable",       d:"easy enough to handle or control without stress"},
+  {w:"overwhelmed",      d:"feeling very stressed or unable to handle too much at once"},
+  {w:"achieve",          d:"reaching a goal or completing something you wanted to do"},
+  {w:"troubleshooting",  d:"finding and fixing problems in a system or process"},
+  {w:"different viewpoints", d:"various ways of thinking about a topic"}
+];
+ 
+const gapData = [
+  {t:"Our team relies on ___ to finish projects on time.",               a:"collaboration"},
+  {t:"The ___ in our office is very friendly and supportive.",            a:"work environment"},
+  {t:"Everyone can ___ ideas during the meetings.",                       a:"contribute"},
+  {t:"Teachers have the power to ___ their students every day.",          a:"inspire"},
+  {t:"Discussing ___ can help us find better solutions.",                 a:"different viewpoints"},
+  {t:"We need to ___ our efforts to reach our common goals.",             a:"combine"},
+  {t:"___ problems quickly is important for a successful project.",       a:"Troubleshooting"},
+  {t:"Sometimes I feel ___ by all the tasks I need to complete.",         a:"overwhelmed"},
+  {t:"With hard work, we can ___ our objectives by the deadline.",        a:"achieve"},
+  {t:"The project's goals are ___ if we plan carefully.",                 a:"manageable"}
+];
+ 
+const bankWords = ["overwhelmed","collaboration","inspire","contribute","different viewpoints","manageable","combine","Troubleshooting","achieve","work environment"];
+ 
+const qzData = [
+  {b:'"When I joined the company, I was nervous about my lack of experience, but my team helped me,',  e:"and now I've learned more in six months than I did in two years at my last job.\"",           spk:"Mark"},
+  {b:'"The whole is greater than',                                                                      e:"the sum of its parts.\"",                                                                    spk:"Proverb"},
+  {b:'"Now that I work with a great team,',                                                             e:"even difficult days feel manageable.\"",                                                     spk:"Lisa"},
+  {b:'"Teamwork isn\'t just about getting work done,',                                                  e:"it's about growing together.\"",                                                             spk:"Sarah"},
+  {b:'"When my team discusses a problem,',                                                              e:"someone always thinks of something that I hadn't considered.\"",                             spk:"David"},
+  {b:'"Before we started working in teams, projects took twice as long,',                               e:"but now we divide tasks based on people's different strengths and skills, and everything flows smoothly.\"", spk:"Emily"},
+  {b:'"When we work together,',                                                                         e:"we achieve things none of us could do alone.\"",                                             spk:"Sarah"},
+  {b:'"We used to be nervous in team meetings,',                                                        e:"but we all trust each other now and know that we can share our ideas together.\"",           spk:"James"},
+  {b:'"At first, I didn\'t want to share my thoughts in meetings,',                                     e:"but when my team encouraged me, I realized my ideas were valuable.\"",                       spk:"Sarah"},
+  {b:'"When someone doesn\'t do their share,',                                                          e:"it affects the whole team.\"",                                                               spk:"Employee"},
+  {b:'"There was a time when I wanted to leave,',                                                       e:"but my team helped me with my work, and reminded me I wasn't alone.\"",                     spk:"Tom"},
+  {b:'"Before we submit a report, at least three team members review it,',                              e:"that way, we do the best possible work for our clients.\"",                                  spk:"Simon"}
+];
+ 
+const discQs = [
+  "How do you feel when you work in a team with others?",
+  "Can you share an experience where teamwork helped you achieve something important?",
+  "What are some advantages of working together with your colleagues?",
+  "Have you ever faced challenges while working in a team? What happened?",
+  "In your opinion, how does good communication affect teamwork?",
+  "Why do you think it is important for team members to support each other?",
+  "How can teamwork lead to better ideas and solutions?",
+  "Do you believe that everyone should contribute equally in a team? Why or why not?",
+  "How has being part of a team influenced your motivation at work or school?",
+  "What qualities do you think make someone a good team player?"
+];
+ 
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let totalScore = 0;
+let doneFlags = {};
+ 
+// Quiz (act4)
+let qIdx = 0, qScore = 0, qAnswered = false, qScored = false;
+ 
+// Vocab (act5)
+let vSel = null, vMatched = 0;
+let vShuffledDefs = [];
+ 
+// Gaps (act6)
+let gapSel = null, gapFills = Array(gapData.length).fill(null), gapScored = false;
+ 
+// Quote Quiz (act7)
+let qzIdx = 0, qzScore = 0, qzAnswered = false;
+let qzOrder = [];
+ 
+// Discuss (act8)
+let discDone = 0;
+ 
+// ══════════════════════════════
+// NAVIGATION
+// ══════════════════════════════
+function goTo(n) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nb'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+ 
+function markDone(n) {
+  if (!doneFlags[n]) {
+    doneFlags[n] = true;
+    document.getElementById('nb'+n).classList.add('done');
+  }
+}
+ 
+function addPts(n) {
+  totalScore += n;
+  document.getElementById('scoreDisplay').textContent = totalScore;
+}
+ 
+// ══════════════════════════════
+// ACT 1 — PREDICT
+// ══════════════════════════════
+function buildPredict() {
+  const c = document.getElementById('sentBoxes');
+  sentHints.forEach((h,i) => {
+    c.innerHTML += `
+      <div class="s-group">
+        <div class="s-label"><span class="s-num">${i+1}</span>${h}</div>
+        <textarea class="s-input" id="si${i}" placeholder="Write your sentence here…" oninput="wcUpdate(${i})"></textarea>
+        <div class="wc" id="wc${i}">0 words</div>
+      </div>`;
+  });
+}
+ 
+function wcUpdate(i) {
+  const v = document.getElementById('si'+i).value.trim();
+  const w = v ? v.split(/\s+/).length : 0;
+  document.getElementById('wc'+i).textContent = w + (w===1?' word':' words');
+}
+ 
+function submitPredict() {
+  let filled = 0;
+  for (let i=0;i<5;i++) if (document.getElementById('si'+i).value.trim().length>4) filled++;
+  const fb = document.getElementById('fb1');
+  if (filled < 3) {
+    fb.className='fb err show';
+    fb.textContent='✏️ Please write at least 3 sentences before you continue.';
+    return;
+  }
+  fb.className='fb ok show';
+  fb.innerHTML='🎉 Great predictions! You earned <strong>10 points</strong>. Now read the text and check your ideas!';
+  if (!doneFlags[1]) { addPts(10); markDone(1); }
+  setTimeout(()=>goTo(2), 1800);
+}
+ 
+// ══════════════════════════════
+// ACT 2 — READ
+// ══════════════════════════════
+const secMeta = [
+  {icon:'📋', color:'#1B7A6E', bg:'#DFF2EF', label:'Introduction'},
+  {icon:'💡', color:'#D97706', bg:'#FEF3C7', label:'Advantages'},
+  {icon:'🧩', color:'#2563EB', bg:'#DBEAFE', label:'Problem Solving'},
+  {icon:'😊', color:'#DB2777', bg:'#FCE7F3', label:'Morale'},
+  {icon:'📚', color:'#7C3AED', bg:'#EDE9FE', label:'Learning'},
+  {icon:'⚡', color:'#EA580C', bg:'#FEF0E6', label:'Efficiency'},
+  {icon:'⭐', color:'#CA8A04', bg:'#FEF9C3', label:'Quality'},
+  {icon:'🤝', color:'#059669', bg:'#D1FAE5', label:'Trust'},
+  {icon:'⚠️', color:'#DC2626', bg:'#FEE2E2', label:'Problems'},
+  {icon:'🌟', color:'#0891B2', bg:'#CFFAFE', label:'Togetherness'},
+];
+ 
+let sectionsRead = 0;
+ 
+function countWords(str) {
+  return str.trim().split(/\s+/).filter(Boolean).length;
+}
+ 
+function buildRead() {
+  const c = document.getElementById('readSections');
+  readData.forEach((sec,i) => {
+    const m = secMeta[i];
+    const wc = countWords(sec.p + sec.qs.join(' '));
+    const qs = sec.qs.map(q=>`
+      <div class="rq">
+        <div class="rq-mark">"</div>
+        <div>
+          <div class="rq-text">${q.replace(/^[""]/, '').replace(/[""]$/, '')}</div>
+        </div>
+      </div>`).join('');
+    c.innerHTML += `
+      <div class="rcard" id="rc${i}">
+        <div class="rcard-accent" style="background:linear-gradient(90deg,${m.color},${m.color}88)"></div>
+        <div class="rcard-head" onclick="toggleSec(${i})">
+          <div class="rcard-icon" style="background:${m.bg};">${m.icon}</div>
+          <div>
+            <div class="rcard-title">${sec.h}</div>
+            <div class="rcard-hint">~${wc} words · ${sec.qs.length} quote${sec.qs.length!==1?'s':''}</div>
+          </div>
+          <div class="rcard-right">
+            <span class="rdone-badge">✓ Read</span>
+            <span class="rcard-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rcard-body">
+          <div class="rcard-body-inner">
+            <p>${sec.p}</p>
+            ${qs}
+          </div>
+          <div class="rcard-footer">
+            <span class="rcard-wc">📖 ~${wc} words</span>
+            <button class="mrb" id="mrb${i}" onclick="markRead(${i},event)">✓ Mark as Read</button>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+ 
+function toggleSec(i) {
+  const card = document.getElementById('rc'+i);
+  card.classList.toggle('rc-open');
+}
+ 
+function markRead(i, e) {
+  e.stopPropagation();
+  const btn = document.getElementById('mrb'+i);
+  if (btn.classList.contains('is-read')) return;
+  btn.classList.add('is-read');
+  btn.textContent = '✅ Done!';
+  document.getElementById('rc'+i).classList.add('rc-done');
+  sectionsRead++;
+  const pct = Math.round(sectionsRead/readData.length*100);
+  document.getElementById('readProgLabel').textContent = `📖 ${sectionsRead} of ${readData.length} sections read`;
+  document.getElementById('readProgPct').textContent = pct+'%';
+  document.getElementById('readProgFill').style.width = pct+'%';
+}
+ 
+function finishRead() {
+  const fb=document.getElementById('fb2');
+  const pct = Math.round(sectionsRead/readData.length*100);
+  if (sectionsRead < 1) {
+    fb.className='fb err show';
+    fb.textContent='📖 Please open and read at least one section before continuing.';
+    return;
+  }
+  fb.className='fb ok show';
+  fb.innerHTML = sectionsRead===readData.length
+    ? '🌟 Amazing! You read all 10 sections! You can return to the text at any time using the navigation bar.'
+    : `📚 Good work! You read ${sectionsRead} of 10 sections (${pct}%). You can always return to read more. Let\'s check your understanding!`;
+  if (!doneFlags[2]) markDone(2);
+  setTimeout(()=>goTo(3), 1800);
+}
+ 
+// ══════════════════════════════
+// ACT 3 — SUMMARY
+// ══════════════════════════════
+let sumSel = null;
+ 
+function buildSum() {
+  const c = document.getElementById('sumCards');
+  sumData.forEach(s => {
+    c.innerHTML += `
+      <div class="sum-card" id="sum${s.n}" onclick="selSum(${s.n})">
+        <div class="sum-num">${s.n}</div>
+        <p style="font-size:.93rem;line-height:1.7">${s.txt}</p>
+      </div>`;
+  });
+}
+ 
+function selSum(n) {
+  if (doneFlags[3]) return;
+  sumSel = n;
+  sumData.forEach(s => document.getElementById('sum'+s.n).classList.remove('sel'));
+  document.getElementById('sum'+n).classList.add('sel');
+  document.getElementById('sumBtn').disabled = false;
+}
+ 
+function checkSum() {
+  const fb = document.getElementById('fb3');
+  if (sumSel === 3) {
+    sumData.forEach(s => {
+      document.getElementById('sum'+s.n).classList.remove('sel');
+      document.getElementById('sum'+s.n).classList.add(s.n===3?'correct':'wrong');
+      document.getElementById('sum'+s.n).classList.add('locked');
+    });
+    fb.className='fb ok show';
+    fb.innerHTML='✅ Correct! Summary <strong>3</strong> is the best — it covers both the advantages <em>and</em> the problems of teamwork, just like the text. You earned <strong>10 points</strong>!';
+    if (!doneFlags[3]) { addPts(10); markDone(3); }
+    document.getElementById('sumBtn').disabled = true;
+    document.getElementById('sum-next').style.display = 'block';
+    confetti();
+  } else {
+    document.getElementById('sum'+sumSel).classList.remove('sel');
+    document.getElementById('sum'+sumSel).classList.add('wrong');
+    fb.className='fb err show';
+    fb.textContent='❌ Not quite. Which summary mentions BOTH the benefits and the problems of teamwork? Try again!';
+    sumSel = null;
+    setTimeout(()=>{
+      sumData.forEach(s=>document.getElementById('sum'+s.n).classList.remove('wrong','sel'));
+      fb.className='fb';
+    }, 2200);
+  }
+}
+ 
+// ══════════════════════════════
+// ACT 4 — QUIZ
+// ══════════════════════════════
+function buildQuiz() { renderQ(); }
+ 
+function renderQ() {
+  const q = qData[qIdx];
+  const L = ['a','b','c','d'];
+  document.getElementById('qCard').innerHTML = `
+    <div class="q-text">Q${qIdx+1}. ${q.q}</div>
+    ${q.opts.map((o,i)=>`<button class="opt" id="o${i}" onclick="pickQ(${i})">${L[i]}) ${o}</button>`).join('')}`;
+  document.getElementById('qProg').textContent = `Question ${qIdx+1} of ${qData.length}`;
+  document.getElementById('qBar').style.width = (qIdx/qData.length*100)+'%';
+  document.getElementById('qNext').style.display = 'none';
+  qAnswered = false;
+}
+ 
+function pickQ(i) {
+  if (qAnswered) return;
+  qAnswered = true;
+  const correct = qData[qIdx].a;
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  if (i===correct) {
+    document.getElementById('o'+i).classList.add('ok');
+    qScore += 5;
+    document.getElementById('qScore').textContent = 'Score: '+qScore;
+  } else {
+    document.getElementById('o'+i).classList.add('err');
+    document.getElementById('o'+correct).classList.add('reveal');
+  }
+  document.getElementById('qNext').style.display = 'inline-block';
+  if (qIdx===qData.length-1) document.getElementById('qNext').textContent = 'See Results 🏆';
+}
+ 
+function nextQ() {
+  qIdx++;
+  if (qIdx >= qData.length) showQResult();
+  else renderQ();
+}
+ 
+function showQResult() {
+  document.getElementById('qCard').style.display = 'none';
+  document.getElementById('qNav').style.display = 'none';
+  document.getElementById('qBar').style.width = '100%';
+  document.getElementById('qProg').textContent = 'Complete!';
+  const pct = Math.round(qScore/70*100);
+  const em = pct>=80?'🏆':pct>=60?'🎯':'💪';
+  const msg = pct>=80?'Excellent!':pct>=60?'Good effort!':'Keep practising!';
+  document.getElementById('qResult').innerHTML = `
+    <div class="result-box">
+      <div style="font-size:3rem;margin-bottom:10px">${em}</div>
+      <div style="font-size:1.8rem;font-weight:900;color:var(--teal);margin-bottom:8px">${qScore} / 70 pts</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--amber);margin-bottom:14px">${pct}% — ${msg}</div>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:20px">You answered ${qScore/5} out of 14 questions correctly.</p>
+      <button class="btn btn-teal" onclick="goTo(5)">Next Activity ➜</button>
+    </div>`;
+  document.getElementById('qResult').style.display = 'block';
+  if (!qScored) { addPts(qScore); qScored = true; markDone(4); }
+  if (pct>=80) confetti();
+}
+ 
+// ══════════════════════════════
+// ACT 5 — VOCABULARY
+// ══════════════════════════════
+function buildVocab() {
+  vShuffledDefs = [...vocabPairs].sort(()=>Math.random()-.5);
+  const wc = document.getElementById('vWords');
+  const dc = document.getElementById('vDefs');
+  vocabPairs.forEach((p,i) => {
+    wc.innerHTML += `<button class="vchip" id="vw${i}" onclick="pickVW(${i})">${p.w}</button>`;
+  });
+  vShuffledDefs.forEach((p,i) => {
+    dc.innerHTML += `<button class="vchip" id="vd${i}" onclick="pickVD(${i})" data-d="${p.d}">${p.d}</button>`;
+  });
+}
+ 
+function pickVW(i) {
+  if (document.getElementById('vw'+i).classList.contains('matched')) return;
+  document.querySelectorAll('[id^="vw"]').forEach(e=>e.classList.remove('vsel'));
+  vSel = i;
+  document.getElementById('vw'+i).classList.add('vsel');
+}
+ 
+function pickVD(i) {
+  if (vSel===null) return;
+  const de = document.getElementById('vd'+i);
+  if (de.classList.contains('matched')) return;
+  const correctDef = vocabPairs[vSel].d;
+  if (de.getAttribute('data-d') === correctDef) {
+    document.getElementById('vw'+vSel).classList.remove('vsel');
+    document.getElementById('vw'+vSel).classList.add('matched');
+    de.classList.add('matched');
+    vMatched++;
+    addPts(5);
+    vSel = null;
+    if (vMatched===vocabPairs.length) {
+      const fb=document.getElementById('fb5');
+      fb.className='fb ok show';
+      fb.innerHTML='🎉 All 10 words matched! You earned 50 points!';
+      markDone(5);
+      document.getElementById('v-next').style.display='block';
+      confetti();
+    }
+  } else {
+    de.classList.add('shake');
+    document.getElementById('vw'+vSel).classList.add('shake');
+    setTimeout(()=>{
+      de.classList.remove('shake');
+      document.getElementById('vw'+vSel).classList.remove('shake','vsel');
+      vSel=null;
+    },500);
+  }
+}
+ 
+// ══════════════════════════════
+// ACT 6 — FILL GAPS
+// ══════════════════════════════
+function buildGaps() {
+  const bc = document.getElementById('wBank');
+  const gc = document.getElementById('gapSents');
+  bankWords.forEach((w,i) => {
+    bc.innerHTML += `<button class="bchip" id="bc${i}" onclick="selChip(${i})" data-w="${w}">${w}</button>`;
+  });
+  gapData.forEach((s,i) => {
+    const pts = s.t.split('___');
+    gc.innerHTML += `
+      <div class="gsent">
+        <span class="sn">${i+1}</span>
+        <span>${pts[0]}</span>
+        <span class="gap" id="g${i}" onclick="fillGap(${i})"></span>
+        <span>${pts[1]}</span>
+      </div>`;
+  });
+}
+ 
+function selChip(i) {
+  const chip = document.getElementById('bc'+i);
+  if (chip.classList.contains('used')) return;
+  document.querySelectorAll('.bchip').forEach(c=>{c.classList.remove('bsel');c.style.cssText='';});
+  gapSel = i;
+  chip.classList.add('bsel');
+}
+ 
+function fillGap(i) {
+  if (gapSel===null) {
+    // clicking a filled gap to clear it
+    if (gapFills[i]!==null) {
+      const prevIdx = gapFills[i];
+      document.getElementById('bc'+prevIdx).classList.remove('used');
+      document.getElementById('g'+i).textContent='';
+      document.getElementById('g'+i).classList.remove('gfilled');
+      gapFills[i]=null;
+    }
+    return;
+  }
+  // if gap already filled, return previous chip
+  if (gapFills[i]!==null) {
+    document.getElementById('bc'+gapFills[i]).classList.remove('used');
+  }
+  const chip = document.getElementById('bc'+gapSel);
+  const word = chip.getAttribute('data-w');
+  document.getElementById('g'+i).textContent = word;
+  document.getElementById('g'+i).classList.add('gfilled');
+  chip.classList.remove('bsel'); chip.classList.add('used'); chip.style.cssText='';
+  gapFills[i] = gapSel;
+  gapSel = null;
+}
+ 
+function checkGaps() {
+  let correct = 0;
+  gapData.forEach((s,i) => {
+    const g = document.getElementById('g'+i);
+    g.classList.remove('gfilled','gcorrect','gwrong');
+    const filled = (g.textContent||'').trim().toLowerCase();
+    if (filled === s.a.toLowerCase()) { g.classList.add('gcorrect'); correct++; }
+    else g.classList.add('gwrong');
+  });
+  const pts = correct*5;
+  const fb = document.getElementById('fb6');
+  if (correct===gapData.length) {
+    fb.className='fb ok show';
+    fb.innerHTML=`🎉 Perfect! All 10 correct! You earned <strong>${pts} points</strong>!`;
+    if (!gapScored) { addPts(pts); gapScored=true; markDone(6); }
+    document.getElementById('gap-next').style.display='block';
+    confetti();
+  } else {
+    fb.className='fb err show';
+    fb.innerHTML=`📝 ${correct}/10 correct. Check the red gaps and try again! ${!gapScored?`You earned <strong>${pts} points</strong> so far.`:''}`;
+    if (!gapScored) { addPts(pts); gapScored=true; }
+    document.getElementById('gapReset').style.display='inline-block';
+  }
+}
+ 
+function resetGaps() {
+  gapFills = Array(gapData.length).fill(null); gapSel=null;
+  gapData.forEach((s,i)=>{
+    const g=document.getElementById('g'+i);
+    g.textContent=''; g.className='gap';
+  });
+  bankWords.forEach((w,i)=>{
+    const c=document.getElementById('bc'+i);
+    c.classList.remove('used','bsel'); c.style.cssText='';
+  });
+  document.getElementById('fb6').className='fb';
+  document.getElementById('gapReset').style.display='none';
+}
+ 
+// ══════════════════════════════
+// ACT 7 — QUOTE QUIZ
+// ══════════════════════════════
+function buildQz() {
+  qzOrder = [...Array(qzData.length).keys()].sort(()=>Math.random()-.5);
+  renderQz();
+}
+ 
+function renderQz() {
+  const q = qzData[qzIdx];
+  // build 4 options: correct + 3 random wrong
+  const wrongPool = qzData.filter((_,i)=>i!==qzIdx).map(x=>x.e);
+  const wrongs = wrongPool.sort(()=>Math.random()-.5).slice(0,3);
+  const allOpts = [...wrongs, q.e].sort(()=>Math.random()-.5);
+ 
+  document.getElementById('qzCard').innerHTML = `
+    <div class="q-begin">
+      ${q.b}…
+      <span class="q-speaker">— ${q.spk}</span>
+    </div>
+    <div style="font-weight:800;color:var(--muted);font-size:.8rem;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Choose the correct ending:</div>
+    ${allOpts.map((o,i)=>`<button class="qopt" id="qzo${i}" onclick="pickQz(${i},'${encodeURIComponent(o)}')">${o}</button>`).join('')}`;
+  document.getElementById('qzProg').textContent = `Quote ${qzIdx+1} of ${qzData.length}`;
+  document.getElementById('qzBar').style.width = (qzIdx/qzData.length*100)+'%';
+  document.getElementById('qzNext').style.display='none';
+  qzAnswered=false;
+}
+ 
+function pickQz(i, encVal) {
+  if (qzAnswered) return;
+  qzAnswered=true;
+  const chosen = decodeURIComponent(encVal);
+  const correct = qzData[qzIdx].e;
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if (chosen===correct) {
+    document.getElementById('qzo'+i).classList.add('ok');
+    qzScore+=5;
+    document.getElementById('qzScore').textContent='Score: '+qzScore;
+  } else {
+    document.getElementById('qzo'+i).classList.add('err');
+    // reveal correct
+    document.querySelectorAll('.qopt').forEach(b=>{
+      if (decodeURIComponent(b.id) && b.textContent.trim()===correct) b.classList.add('reveal');
+    });
+    // find correct button
+    document.querySelectorAll('.qopt').forEach(b=>{
+      if (b.textContent.trim()===correct) b.classList.add('reveal');
+    });
+  }
+  document.getElementById('qzNext').style.display='inline-block';
+  if (qzIdx===qzData.length-1) document.getElementById('qzNext').textContent='See Results 🏆';
+}
+ 
+function nextQz() {
+  qzIdx++;
+  if (qzIdx>=qzData.length) showQzResult();
+  else renderQz();
+}
+ 
+function showQzResult() {
+  document.getElementById('qzCard').style.display='none';
+  document.getElementById('qzNav').style.display='none';
+  document.getElementById('qzBar').style.width='100%';
+  document.getElementById('qzProg').textContent='Complete!';
+  const pct=Math.round(qzScore/60*100);
+  const em=pct>=80?'🌟':pct>=60?'👍':'💪';
+  const msg=pct>=80?'Excellent recall!':pct>=60?'Good work!':'Keep practising!';
+  document.getElementById('qzResult').innerHTML=`
+    <div class="result-box">
+      <div style="font-size:3rem;margin-bottom:10px">${em}</div>
+      <div style="font-size:1.8rem;font-weight:900;color:var(--teal);margin-bottom:8px">${qzScore} / 60 pts</div>
+      <div style="font-size:1.05rem;font-weight:800;color:var(--amber);margin-bottom:14px">${pct}% — ${msg}</div>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:20px">You matched ${qzScore/5} out of 12 quotes correctly.</p>
+      <button class="btn btn-teal" onclick="goTo(8)">Next Activity ➜</button>
+    </div>`;
+  document.getElementById('qzResult').style.display='block';
+  addPts(qzScore); markDone(7);
+  if (pct>=80) confetti();
+}
+ 
+// ══════════════════════════════
+// ACT 8 — DISCUSSION
+// ══════════════════════════════
+function buildDisc() {
+  const c = document.getElementById('discCards');
+  discQs.forEach((q,i) => {
+    c.innerHTML += `
+      <div class="disc-card" id="dc${i}">
+        <div class="dq"><div class="dq-num">${i+1}</div><span>${q}</span></div>
+        <textarea class="dtxt" id="dt${i}" placeholder="Write your ideas here…" oninput="dcc(${i})"></textarea>
+        <div class="disc-foot">
+          <span class="cc" id="cc${i}">0 / 150 characters</span>
+          <button class="done-btn" id="db${i}" onclick="markDiscDone(${i})">✓ Done</button>
+        </div>
+      </div>`;
+  });
+}
+ 
+function dcc(i) {
+  const v=document.getElementById('dt'+i).value;
+  document.getElementById('cc'+i).textContent=v.length+' / 150 characters';
+}
+ 
+function markDiscDone(i) {
+  const btn=document.getElementById('db'+i);
+  if (btn.classList.contains('is-done')) return;
+  btn.classList.add('is-done'); btn.textContent='✅ Done!';
+  document.getElementById('dc'+i).classList.add('disc-done');
+  discDone++;
+  addPts(5);
+  if (discDone===discQs.length) {
+    markDone(8);
+    document.getElementById('certTrigger').style.display='block';
+  }
+}
+ 
+// ══════════════════════════════
+// CERTIFICATE
+// ══════════════════════════════
+function openCert() {
+  const pct=Math.round(totalScore/300*100);
+  let icon='🏆', msg='';
+  if (pct>=90){ icon='🥇'; msg='Outstanding! You have an excellent understanding of teamwork vocabulary and concepts. Amazing work!'; }
+  else if (pct>=80){ icon='🏆'; msg='Excellent! You have shown strong reading and vocabulary skills. Well done!'; }
+  else if (pct>=70){ icon='🎯'; msg='Good work! You showed solid understanding. Review the activities to improve further.'; }
+  else { icon='💪'; msg='Good effort! Review the text and activities again to strengthen your understanding.'; }
+  document.getElementById('certIcon').textContent=icon;
+  document.getElementById('certPts').textContent=totalScore+' / 300 pts · '+pct+'%';
+  document.getElementById('certMsg').textContent=msg;
+  document.getElementById('certOverlay').classList.add('open');
+  confetti();
+}
+ 
+// ══════════════════════════════
+// CONFETTI
+// ══════════════════════════════
+function confetti() {
+  const cols=['#1B7A6E','#F4A228','#E85D3A','#239963','#7B61FF','#3498DB'];
+  for (let i=0;i<55;i++) {
+    const el=document.createElement('div');
+    el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}vw;width:${Math.random()*9+5}px;height:${Math.random()*9+5}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${Math.random()*2+1.4}s;animation-delay:${Math.random()*.4}s`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3200);
+  }
+}
+ 
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+buildPredict();
+buildRead();
+buildSum();
+buildQuiz();
+buildVocab();
+buildGaps();
+buildQz();
+buildDisc();
+</script>
+</body>
+</html>
