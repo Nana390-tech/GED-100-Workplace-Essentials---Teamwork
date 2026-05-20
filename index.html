@@ -65,7 +65,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);m
 .nav-btn.done .ck{display:inline}
  
 /* ── MAIN ── */
-.main{max-width:860px;margin:0 auto;padding:28px 18px 80px}
+.main{max-width:860px;margin:0 auto;padding:28px 18px 110px}
 .section{display:none;animation:fadeUp .35s ease}
 .section.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -323,6 +323,47 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);m
 .app-footer{
   text-align:center;padding:18px;font-size:.75rem;color:var(--muted);
   border-top:1px solid var(--teal-pale);background:#fff;
+}
+ 
+/* ── SAVE / LOAD BAR ── */
+.save-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(18,80,70,0.96);backdrop-filter:blur(10px);
+  padding:9px 20px;display:flex;align-items:center;
+  justify-content:center;gap:10px;
+}
+.save-btn{
+  padding:7px 18px;border-radius:50px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;
+  cursor:pointer;border:2px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.12);color:#fff;transition:all .2s;
+}
+.save-btn:hover{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.6)}
+.save-msg{
+  font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;
+  color:rgba(255,255,255,.9);padding:0 8px;display:none;
+}
+.save-msg.show{display:inline}
+ 
+/* ── PRINT STYLES ── */
+@media print {
+  body > *:not(.cert-print-wrap){display:none!important}
+  .cert-print-wrap{
+    display:block!important;position:fixed;inset:0;
+    background:#fff;padding:40px;
+  }
+  .cert-print-inner{
+    max-width:560px;margin:0 auto;text-align:center;
+    border:3px solid #1B7A6E;border-radius:20px;padding:48px 40px;
+    font-family:'Nunito',sans-serif;
+  }
+  .cert-print-logo{font-size:3.5rem;margin-bottom:12px}
+  .cert-print-course{font-size:.82rem;color:#666;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .cert-print-title{font-size:1.9rem;font-weight:900;color:#1B7A6E;margin-bottom:6px}
+  .cert-print-sub{font-size:.88rem;color:#888;margin-bottom:22px}
+  .cert-print-score{font-size:2.8rem;font-weight:900;color:#F4A228;margin-bottom:14px}
+  .cert-print-msg{font-size:.93rem;color:#333;line-height:1.65;margin-bottom:28px}
+  .cert-print-footer{font-size:.73rem;color:#aaa;border-top:1px solid #eee;padding-top:14px}
 }
  
 /* ── UTILS ── */
@@ -624,6 +665,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);m
     <div class="cert-pts" id="certPts">0 / 300</div>
     <div class="cert-msg" id="certMsg"></div>
     <button class="btn btn-teal" onclick="document.getElementById('certOverlay').classList.remove('open')">Close ✕</button>
+    <button class="btn btn-amber" onclick="printCert()" style="margin-left:10px">🖨️ Print Certificate</button>
   </div>
 </div>
  
@@ -1357,6 +1399,103 @@ function confetti() {
 }
  
 // ══════════════════════════════
+// SAVE / LOAD PROGRESS
+// ══════════════════════════════
+function saveProgress() {
+  const data = {
+    version: 1,
+    appName: "Teamwork — B1 Reading Lab",
+    savedAt: new Date().toLocaleString(),
+    totalScore,
+    doneFlags,
+    // Summary
+    sumSel,
+    // Quiz
+    currentQ, quizScore,
+    // Vocab
+    vocabMatched,
+    // Gaps
+    gapFills: gapFills.map((f,i) => f !== null ? document.getElementById('chip'+f)?.getAttribute('data-word') : null),
+    gapScored,
+    // Quote quiz
+    qzIdx, qzScore,
+    // Discuss
+    discDone,
+    // Reading
+    sectionsRead
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'teamwork-progress.json'; a.click();
+  URL.revokeObjectURL(url);
+  showSaveMsg('✅ Saved! Keep your file safe.');
+}
+ 
+function loadProgress(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.appName || !d.appName.includes('Teamwork')) {
+        showSaveMsg('❌ Wrong file — please use a Teamwork save file.');
+        return;
+      }
+      // Restore scores & flags
+      totalScore = d.totalScore || 0;
+      document.getElementById('totalScore').textContent = totalScore;
+      doneFlags = d.doneFlags || {};
+      Object.keys(doneFlags).forEach(n => {
+        if (doneFlags[n]) document.getElementById('navBtn'+n)?.classList.add('done');
+      });
+      // Restore activity states
+      if (d.currentQ) { currentQ = d.currentQ; quizScore = d.quizScore || 0; renderQuestion(); }
+      vocabMatched = d.vocabMatched || 0;
+      if (d.gapScored) gapScored = true;
+      if (d.qzIdx) { qzIdx = d.qzIdx; qzScore = d.qzScore || 0; renderQz(); }
+      discDone = d.discDone || 0;
+      if (d.sectionsRead > 0) {
+        sectionsRead = d.sectionsRead || 0;
+        const pct = Math.round(sectionsRead/readingSections.length*100);
+        document.getElementById('readProgLabel').textContent = `📖 ${sectionsRead} of ${readingSections.length} sections read`;
+        document.getElementById('readProgPct').textContent = pct+'%';
+        document.getElementById('readProgFill').style.width = pct+'%';
+      }
+      showSaveMsg('📂 Progress loaded! Carry on from where you stopped.');
+    } catch(err) {
+      showSaveMsg('❌ Could not read file. Please try again.');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+ 
+function showSaveMsg(msg) {
+  const el = document.getElementById('saveMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+ 
+// ══════════════════════════════
+// PRINT CERTIFICATE
+// ══════════════════════════════
+function printCert() {
+  const pct = Math.round(totalScore/300*100);
+  let msg = pct>=90 ? 'Outstanding! You have an excellent understanding of teamwork vocabulary and concepts.' :
+            pct>=80 ? 'Excellent! You have shown strong reading and vocabulary skills. Well done!' :
+            pct>=70 ? 'Good work! You showed solid understanding. Review the activities to improve further.' :
+                      'Good effort! Review the text and activities again to strengthen your understanding.';
+  document.getElementById('certPrintScore').textContent = totalScore + ' / 300 pts · ' + pct + '%';
+  document.getElementById('certPrintMsg').textContent = msg;
+  document.getElementById('certPrintWrap').style.display = 'block';
+  window.print();
+  setTimeout(() => { document.getElementById('certPrintWrap').style.display = 'none'; }, 1000);
+}
+ 
+// ══════════════════════════════
 // INIT
 // ══════════════════════════════
 buildPredict();
@@ -1368,5 +1507,31 @@ buildGaps();
 buildQz();
 buildDisc();
 </script>
+<!-- SAVE / LOAD BAR -->
+<div class="save-bar">
+  <button class="save-btn" onclick="saveProgress()">💾 Save Progress</button>
+  <label class="save-btn" style="cursor:pointer;margin:0">
+    📂 Load Progress
+    <input type="file" accept=".json" id="loadFileInput" onchange="loadProgress(this)" style="display:none">
+  </label>
+  <span class="save-msg" id="saveMsg"></span>
+</div>
+ 
+<!-- PRINT-ONLY CERTIFICATE -->
+<div class="cert-print-wrap" style="display:none" id="certPrintWrap">
+  <div class="cert-print-inner">
+    <div class="cert-print-logo">🏆</div>
+    <div class="cert-print-course">GED 100 · Workplace Essentials</div>
+    <div class="cert-print-title">Certificate of Completion</div>
+    <div class="cert-print-sub">Teamwork — B1 Reading Lab</div>
+    <div class="cert-print-score" id="certPrintScore"></div>
+    <div class="cert-print-msg" id="certPrintMsg"></div>
+    <div class="cert-print-footer">
+      Designed by Nazila Motahari &nbsp;·&nbsp; Text by Terry Prosser &nbsp;·&nbsp; HCT · Abu Dhabi
+    </div>
+  </div>
+</div>
+ 
 </body>
 </html>
+ 
